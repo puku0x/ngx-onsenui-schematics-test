@@ -1,6 +1,6 @@
 {
   "name": "ngx-onsenui-schematics-test",
-  "version": "0.0.1-alpha.5",
+  "version": "0.0.1-alpha.6",
   "description": "An ngx-onsneui schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
