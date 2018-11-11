@@ -1,4 +1,4 @@
-import {chain, Rule, Tree, SchematicsException} from '@angular-devkit/schematics';
+import {chain, Rule, SchematicContext, Tree, SchematicsException} from '@angular-devkit/schematics';
 import {
   addModuleImportToRootModule,
   getProjectFromWorkspace,
@@ -15,7 +15,7 @@ import {Schema} from './schema';
 import { InsertChange } from '@schematics/angular/utility/change';
 
 /** Name of the ngx-onsenui module. */
-const onsenModuleName = 'OnsenModule';
+const moduleName = 'OnsenModule';
 
 /**
  * Scaffolds the basics of a Angular Material application, this includes:
@@ -25,9 +25,10 @@ const onsenModuleName = 'OnsenModule';
  */
 export default function(options: Schema): Rule {
   return chain([
-    addOnsenModule(options),
     addCustomElementsSchema(options),
+    addOnsenModule(options),
     addOnsenStyles(options),
+    showCompleteMessage()
   ]);
 }
 
@@ -35,16 +36,18 @@ export default function(options: Schema): Rule {
  * Adds an animation module to the root module of the specified project.
  */
 function addOnsenModule(options: Schema) {
-  return (host: Tree) => {
+  return (host: Tree, context: SchematicContext) => {
     const workspace = getWorkspace(host);
     const project = getProjectFromWorkspace(workspace, options.project);
     const appModulePath = getAppModulePath(host, getProjectMainFile(project));
 
-    if (!hasNgModuleImport(host, appModulePath, onsenModuleName)) {
+    if (!hasNgModuleImport(host, appModulePath, moduleName)) {
       // Do not add the OnsenModule module if the project already explicitly uses
       // the BrowserAnimationsModule.
-      addModuleImportToRootModule(host, onsenModuleName, 'ngx-onsenui', project);
+      addModuleImportToRootModule(host, moduleName, 'ngx-onsenui', project);
     }
+
+    context.logger.log('info', `✅️ ${moduleName} is imported`);
 
     return host;
   };
@@ -82,7 +85,7 @@ function addCustomElementsSchema(options: Schema) {
  * Adds Onsen UI styles to the specified project. 
  */
 function addOnsenStyles(options: Schema) {
-  return (host: Tree) => {
+  return (host: Tree, context: SchematicContext) => {
     const workspace = getWorkspace(host);
     const project = getProjectFromWorkspace(workspace, options.project);
     const onsenTheme =  `./node_modules/onsenui/css/onsenui.css`;
@@ -92,6 +95,8 @@ function addOnsenStyles(options: Schema) {
     addThemeStyleToTarget(project, 'build', host, onsenComponentsTheme, workspace);
     addThemeStyleToTarget(project, 'test', host, onsenTheme, workspace);
     addThemeStyleToTarget(project, 'test', host, onsenComponentsTheme, workspace);
+
+    context.logger.log('info', `✅️ Added Onsen UI theme to styles`);
 
     return host;
   };
@@ -119,4 +124,15 @@ function addThemeStyleToTarget(project: WorkspaceProject, targetName: string, ho
   }
 
   host.overwrite('angular.json', JSON.stringify(workspace, null, 2));
+}
+
+/**
+ * Show complete message.
+ */
+function showCompleteMessage() {
+  return (host: Tree, context: SchematicContext) => {
+    context.logger.log('info', `🎉 Hooray! ngx-onsenui is successfully installed.`);
+    context.logger.log('info', `♨️ For more information, see https://onsen.io/v2/api/angular2/`);
+    return host;
+  };
 }
