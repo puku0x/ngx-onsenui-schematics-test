@@ -1,3 +1,4 @@
+import { parseJson } from '@angular-devkit/core';
 import {chain, Rule, SchematicContext, Tree, SchematicsException} from '@angular-devkit/schematics';
 import {
   addModuleImportToRootModule,
@@ -14,6 +15,22 @@ import {getAppModulePath} from '@schematics/angular/utility/ng-ast-utils';
 import {Schema} from './schema';
 import { InsertChange } from '@schematics/angular/utility/change';
 
+/** JSON */
+interface UpdateJsonFn<T> {
+  (obj: T): T | void;
+}
+
+type TsLintPartialType = {
+  rules: {
+    [key: string]: [
+      boolean,
+      string | string[],
+      string | string[],
+      string
+    ]
+  };
+}
+
 /** Name of the ngx-onsenui module. */
 const moduleName = 'OnsenModule';
 
@@ -29,8 +46,54 @@ export default function(options: Schema): Rule {
     addOnsenModule(options),
     addOnsenStyles(options),
     addDefaultStyleExt(options),
+    updateTsLint(),
     showCompleteMessage()
   ]);
+}
+
+/**
+ * Updates JSON file
+ */
+function updateJsonFile<T>(host: Tree, path: string, callback: UpdateJsonFn<T>): Tree {
+  const source = host.read(path);
+  if (source) {
+    const sourceText = source.toString('utf-8');
+    const json = parseJson(sourceText);
+    callback(json as {} as T);
+    host.overwrite(path, JSON.stringify(json, null, 4));
+  }
+
+  return host;
+}
+
+/**
+ * Updates tslint.json
+ */
+function updateTsLint() {
+  return (host: Tree) => {
+    if (!host.exists('src/tslint.json')) { return host; }
+
+    return updateJsonFile(host, 'src/tslint.json', (tslint: TsLintPartialType) => {
+      if (!tslint.rules) {
+        tslint.rules = {};
+      }
+      if (!tslint.rules['component-selector']) {
+        tslint.rules['component-selector'] = [
+          true,
+          'element',
+          'app',
+          'kebab-case'
+        ];
+      }
+
+      const s = tslint.rules['component-selector'][2];
+      if (Array.isArray(s)) {
+        tslint.rules['component-selector'][2] = [...s, 'ons-page'];
+      } else {
+        tslint.rules['component-selector'][2] = [s, 'ons-page'];
+      }
+    });
+  };
 }
 
 /**
