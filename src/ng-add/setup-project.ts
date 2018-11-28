@@ -7,7 +7,7 @@ import {
   getProjectTargetOptions,
   getSourceFile,
   hasNgModuleImport,
-} from '@angular/cdk/schematics';
+} from '../utils';
 import {WorkspaceProject, WorkspaceSchema} from '@angular-devkit/core/src/workspace';
 import {getWorkspace} from '@schematics/angular/utility/config';
 import {addSymbolToNgModuleMetadata} from '@schematics/angular/utility/ast-utils';
