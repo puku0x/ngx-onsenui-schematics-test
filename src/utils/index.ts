@@ -6,12 +6,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {WorkspaceProject} from '@angular-devkit/core/src/workspace';
-import {SchematicsException, Tree} from '@angular-devkit/schematics';
-import {addImportToModule} from '@schematics/angular/utility/ast-utils';
-import {InsertChange} from '@schematics/angular/utility/change';
-import {getAppModulePath} from '@schematics/angular/utility/ng-ast-utils';
-import {getProjectMainFile} from './project-main-file';
+import { WorkspaceProject } from '@angular-devkit/core/src/workspace';
+import { SchematicsException, Tree } from '@angular-devkit/schematics';
+import { addImportToModule } from '@schematics/angular/utility/ast-utils';
+import { InsertChange } from '@schematics/angular/utility/change';
+import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
+import { getProjectMainFile } from './project-main-file';
 import * as ts from 'typescript';
 
 export * from './get-project';

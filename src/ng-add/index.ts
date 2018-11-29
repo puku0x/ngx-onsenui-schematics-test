@@ -15,7 +15,7 @@ export default function(options: Schema): Rule {
   return (tree: Tree, context: SchematicContext) => {
     context.logger.log('info', `🔍 Installing packages...`);
     addPackageToPackageJson(tree, 'onsenui', '^2.10.0');
-    addPackageToPackageJson(tree, 'ngx-onsenui', '^4.2.0');
+    addPackageToPackageJson(tree, 'ngx-onsenui', '^7.0.0');
     const installTaskId = context.addTask(new NodePackageInstallTask());
 
     context.addTask(new RunSchematicTask('ng-add-setup-project', options), [installTaskId]);

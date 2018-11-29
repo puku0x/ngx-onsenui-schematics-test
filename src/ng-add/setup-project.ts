@@ -1,5 +1,5 @@
 import { parseJson } from '@angular-devkit/core';
-import {chain, Rule, SchematicContext, Tree, SchematicsException} from '@angular-devkit/schematics';
+import { chain, Rule, SchematicContext, Tree, SchematicsException } from '@angular-devkit/schematics';
 import {
   addModuleImportToRootModule,
   getProjectFromWorkspace,
@@ -8,11 +8,11 @@ import {
   getSourceFile,
   hasNgModuleImport,
 } from '../utils';
-import {WorkspaceProject, WorkspaceSchema} from '@angular-devkit/core/src/workspace';
-import {getWorkspace} from '@schematics/angular/utility/config';
-import {addSymbolToNgModuleMetadata} from '@schematics/angular/utility/ast-utils';
-import {getAppModulePath} from '@schematics/angular/utility/ng-ast-utils';
-import {Schema} from './schema';
+import { WorkspaceProject, WorkspaceSchema } from '@angular-devkit/core/src/workspace';
+import { getWorkspace } from '@schematics/angular/utility/config';
+import { addSymbolToNgModuleMetadata } from '@schematics/angular/utility/ast-utils';
+import { getAppModulePath } from '@schematics/angular/utility/ng-ast-utils';
+import { Schema } from './schema';
 import { InsertChange } from '@schematics/angular/utility/change';
 
 /** JSON */
